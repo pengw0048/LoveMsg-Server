@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS `groupinfo`;
 
 CREATE TABLE `groupinfo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) DEFAULT NULL,
+  `name` varchar(40) DEFAULT NULL,
   `startdate` varchar(25) DEFAULT NULL,
   `ip` varchar(20) DEFAULT NULL,
   `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -37,8 +37,7 @@ DROP TABLE IF EXISTS `groupmember`;
 CREATE TABLE `groupmember` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `groupid` int(11) DEFAULT NULL,
-  `memberid` int(11) DEFAULT NULL,
-  `membername` varchar(20) DEFAULT NULL,
+  `name` varchar(20) DEFAULT NULL,
   `lastlogin` datetime DEFAULT NULL,
   `ip` varchar(20) DEFAULT NULL,
   `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
