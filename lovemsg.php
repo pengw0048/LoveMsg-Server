@@ -25,7 +25,7 @@ if($act=='login'){
 	$group=$_REQUEST['group'];
 	$member=$_REQUEST['member'];
 	if($group==''||$member=='')exit;
-	$dbh = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+	$dbh = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 	$sql=$dbh->prepare("select * from groupinfo where name=?");
 	$sql->execute(array($group));
 	$groupinfo=$sql->fetch();
