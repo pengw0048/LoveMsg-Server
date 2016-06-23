@@ -39,12 +39,12 @@ if($act=='login'){
 			$sql=$dbh->prepare("update groupmember set lastlogin=? where id=?");
 			$sql->execute(array($curtime,$memberinfo['id']));
 			$sql=null;
-			echo '欢迎回来。';
+			echo '1:欢迎回来。';
 		}else{
 			$sql=$dbh->prepare("insert into groupmember (groupid,name,lastlogin,ip) values (?,?,?,?)");
 			$sql->execute(array($groupinfo['id'],$member,$curtime,$ip));
 			$sql=null;
-			echo str_replace("#*","","欢迎加入“$group#*”组，用名字“$member#*”登陆可以同步你的消息。");
+			echo str_replace("#*","","1:欢迎加入“$group#*”组，用名字“$member#*”登陆可以同步你的消息。");
 		}
 	}else{
 		$sql=$dbh->prepare("insert into groupinfo (name,ip) values (?,?)");
@@ -54,7 +54,7 @@ if($act=='login'){
 		$sql=$dbh->prepare("insert into groupmember (groupid,name,lastlogin,ip) values (?,?,?,?)");
 		$sql->execute(array($groupid,$member,$curtime,$ip));
 		$sql=null;
-		echo str_replace("#*","","其他人可以加入新的“$group#*”组，用名字“$member#*”登陆可以同步你的消息。");
+		echo str_replace("#*","","1:其他人可以加入新的“$group#*”组，用名字“$member#*”登陆可以同步你的消息。");
 	}
 	$dbh=null;
 }
