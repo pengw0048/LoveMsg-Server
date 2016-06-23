@@ -36,6 +36,9 @@ if($act=='login'){
 		$memberinfo=$sql->fetch();
 		$sql=null;
 		if($memberinfo!=FALSE){
+			$sql=$dbh->prepare("update groupmember set lastlogin=? where id=?");
+			$sql->execute(array($curtime,$memberinfo['id']));
+			$sql=null;
 			echo '欢迎回来。';
 		}else{
 			$sql=$dbh->prepare("insert into groupmember (groupid,name,lastlogin,ip) values (?,?,?,?)");
