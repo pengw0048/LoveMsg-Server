@@ -47,7 +47,7 @@ if($act=='login'){
 			echo str_replace("#*","","1:欢迎加入“$group#*”组，用名字“$member#*”登陆可以同步你的消息。");
 		}
 	}else{
-		$sql=$dbh->prepare("insert into groupinfo (name,ip) values (?,?)");
+		$sql=$dbh->prepare("insert into groupinfo (name,ip,startdate) values (?,?)");
 		$sql->execute(array($group,$ip));
 		$sql=null;
 		$groupid=$dbh->lastInsertId();
@@ -56,6 +56,30 @@ if($act=='login'){
 		$sql=null;
 		echo str_replace("#*","","1:其他人可以加入新的“$group#*”组，用名字“$member#*”登陆可以同步你的消息。");
 	}
-	$dbh=null;
+}else if($act=='getdate'){
+	if(!isset($_REQUEST['group']))exit;
+	$group=$_REQUEST['group'];
+	if($group=='')exit;
+	$dbh = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+	$sql=$dbh->prepare("select * from groupinfo where name=?");
+	$sql->execute(array($group));
+	$groupinfo=$sql->fetch();
+	$sql=null;
+	if($groupinfo!=FALSE&&isset($groupinfo['startdate'])){
+		$date=$groupinfo['startdate'];
+		echo "1:$date";
+	}else{
+		echo str_replace("#*","","0:");
+	}
+}else if($act=='setdate'){
+	if(!isset($_REQUEST['group'])||!isset($_REQUEST['value']))exit;
+	$group=$_REQUEST['group'];
+	$value=$_REQUEST['value'];
+	if($group==''||$value=='')exit;
+	$dbh = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+	$sql=$dbh->prepare("update groupinfo set startdate=? where name=?");
+	$sql->execute(array($value,$group));
+	$sql=null;
 }
+$dbh=null;
 ?>
