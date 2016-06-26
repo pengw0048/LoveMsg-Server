@@ -94,8 +94,35 @@ if($act=='login'){
 		$msg=$sql->fetchAll();
 		echo json_encode($msg);
 		$sql=null;
-		$sql=$dbh->prepare("UPDATE messagestat SET status=1 WHERE memberid=?");
+		$sql=$dbh->prepare("UPDATE messagestat SET status=1 WHERE memberid=? AND status=0");
 		$sql->execute(array($mid));
+		$sql=null;
+	}
+}else if($act=='sendmsg'){
+	if(!isset($_REQUEST['group'])||!isset($_REQUEST['member'])||!isset($_REQUEST['content']))exit;
+	$group=$_REQUEST['group'];
+	$member=$_REQUEST['member'];
+	$content=$_REQUEST['content'];
+	if($group==''||$member=='')exit;
+	$sql=$dbh->prepare("select groupmember.id as `mid`,groupinfo.id AS `gid` from groupmember,groupinfo where groupmember.name=? and groupinfo.id=groupmember.groupid and groupinfo.name=?");
+	$sql->execute(array($member,$group));
+	$memberinfo=$sql->fetch();
+	$sql=null;
+	if($memberinfo!=FALSE){
+		$mid=$memberinfo['mid'];
+		$gid=$memberinfo['gid'];
+		$sql=$dbh->prepare("INSERT into message (groupid,senderid,content,ip) values(?,?,?,?)");
+		$sql->execute(array($gid,$mid,$content,$ip));
+		$sql=null;
+		$msgid=$dbh->lastInsertId();
+		$sql=$dbh->prepare("SELECT id FROM groupmember WHERE groupid=?");
+		$sql->execute(array($gid));
+		while($row=$sql->fetch()){
+			if($row['id']==$mid)continue;
+			$sql2=$dbh->prepare("INSERT into messagestat (messageid,memberid,status) values(?,?,0)");
+			$sql2->execute(array($msgid,$row['id']));
+			$sql2=null;
+		}
 		$sql=null;
 	}
 }
