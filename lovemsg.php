@@ -91,7 +91,7 @@ if($act=='login'){
 		$mid=$memberinfo['mid'];
 		$sql=$dbh->prepare("SELECT message.id,message.content,groupmember.name,messagestat.id AS statid FROM message,groupmember,messagestat WHERE message.senderid=groupmember.id AND message.senderid!=? AND message.id=messagestat.messageid AND messagestat.status=0 AND messagestat.memberid=?");
 		$sql->execute(array($mid,$mid));
-		$msg=$sql->fetchAll();
+		$msg=$sql->fetchAll(PDO::FETCH_ASSOC);
 		echo json_encode($msg);
 		$sql=null;
 		$sql=$dbh->prepare("UPDATE messagestat SET status=1 WHERE memberid=? AND status=0");
