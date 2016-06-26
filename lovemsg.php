@@ -20,12 +20,12 @@ if(!isset($_REQUEST['action']))exit;
 $act=$_REQUEST['action'];
 $curtime=date('Y-m-d H:i:s');
 $ip=GetIP();
+$dbh = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 if($act=='login'){
 	if(!isset($_REQUEST['group'])||!isset($_REQUEST['member']))exit;
 	$group=$_REQUEST['group'];
 	$member=$_REQUEST['member'];
 	if($group==''||$member=='')exit;
-	$dbh = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 	$sql=$dbh->prepare("select * from groupinfo where name=?");
 	$sql->execute(array($group));
 	$groupinfo=$sql->fetch();
@@ -60,7 +60,6 @@ if($act=='login'){
 	if(!isset($_REQUEST['group']))exit;
 	$group=$_REQUEST['group'];
 	if($group=='')exit;
-	$dbh = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 	$sql=$dbh->prepare("select * from groupinfo where name=?");
 	$sql->execute(array($group));
 	$groupinfo=$sql->fetch();
@@ -76,10 +75,29 @@ if($act=='login'){
 	$group=$_REQUEST['group'];
 	$value=$_REQUEST['value'];
 	if($group==''||$value=='')exit;
-	$dbh = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 	$sql=$dbh->prepare("update groupinfo set startdate=? where name=?");
 	$sql->execute(array($value,$group));
 	$sql=null;
+}else if($act=='getmsg'){
+	if(!isset($_REQUEST['group'])||!isset($_REQUEST['member']))exit;
+	$group=$_REQUEST['group'];
+	$member=$_REQUEST['member'];
+	if($group==''||$member=='')exit;
+	$sql=$dbh->prepare("select groupmember.id as mid from groupmember,groupinfo where groupmember.name=? and groupinfo.id=groupmember.groupid and groupinfo.name=?");
+	$sql->execute(array($member,$group));
+	$memberinfo=$sql->fetch();
+	$sql=null;
+	if($memberinfo!=FALSE){
+		$mid=$memberinfo['mid'];
+		$sql=$dbh->prepare("SELECT message.id,message.content,groupmember.name,messagestat.id AS statid FROM message,groupmember,messagestat WHERE message.senderid=groupmember.id AND message.senderid!=? AND message.id=messagestat.messageid AND messagestat.status=0 AND messagestat.memberid=?");
+		$sql->execute(array($mid,$mid));
+		$msg=$sql->fetchAll();
+		echo json_encode($msg);
+		$sql=null;
+		$sql=$dbh->prepare("UPDATE messagestat SET status=1 WHERE memberid=?");
+		$sql->execute(array($mid));
+		$sql=null;
+	}
 }
 $dbh=null;
 ?>

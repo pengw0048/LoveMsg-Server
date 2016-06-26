@@ -71,8 +71,6 @@ CREATE TABLE `messagestat` (
   `groupid` int(11) DEFAULT NULL,
   `memberid` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
-  `ip` varchar(20) DEFAULT NULL,
-  `createtime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
