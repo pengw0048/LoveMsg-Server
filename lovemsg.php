@@ -47,7 +47,7 @@ if($act=='login'){
 			echo str_replace("#*","","1:欢迎加入“$group#*”组，用名字“$member#*”登陆可以同步你的消息。");
 		}
 	}else{
-		$sql=$dbh->prepare("insert into groupinfo (name,ip,startdate) values (?,?)");
+		$sql=$dbh->prepare("insert into groupinfo (name,ip) values (?,?)");
 		$sql->execute(array($group,$ip));
 		$sql=null;
 		$groupid=$dbh->lastInsertId();
