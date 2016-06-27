@@ -125,6 +125,21 @@ if($act=='login'){
 		}
 		$sql=null;
 	}
+}else if($act=='cleanup'){
+	if(!isset($_REQUEST['group'])||!isset($_REQUEST['member']))exit;
+	$group=$_REQUEST['group'];
+	$member=$_REQUEST['member'];
+	if($group==''||$member=='')exit;
+	$sql=$dbh->prepare("select groupmember.id as mid from groupmember,groupinfo where groupmember.name=? and groupinfo.id=groupmember.groupid and groupinfo.name=?");
+	$sql->execute(array($member,$group));
+	$memberinfo=$sql->fetch();
+	$sql=null;
+	if($memberinfo!=FALSE){
+		$mid=$memberinfo['mid'];
+		$sql=$dbh->prepare("DELETE FROM messagestat WHERE memberid=? AND status=1");
+		$sql->execute(array($mid));
+		$sql=null;
+	}
 }
 $dbh=null;
 ?>
