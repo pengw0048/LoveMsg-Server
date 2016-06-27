@@ -68,6 +68,7 @@ DROP TABLE IF EXISTS `messagestat`;
 
 CREATE TABLE `messagestat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `messageid` int(11) DEFAULT NULL,
   `groupid` int(11) DEFAULT NULL,
   `memberid` int(11) DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
